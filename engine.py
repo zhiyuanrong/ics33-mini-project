@@ -25,8 +25,25 @@ class QueryEngine:
         """
         # TODO: Implement the traversal. This unreachable yield keeps the stub a
         # generator without doing the students' work for them.
-        if False:
-            yield Item()  # type: ignore[call-arg]
+        if isinstance(node, dict):
+            if "items" in node:
+                for item_data in node["items"]:
+                    yield Item(
+                        sku=item_data["sku"],
+                        name=item_data["name"],
+                        rarity=item_data["rarity"],
+                        qty=item_data["qty"],
+                        base_price=item_data["base_price"],
+                        tags=item_data["tags"],
+                    )
+            else:
+                for value in node.values():
+                    yield from self._walk_node(value)
+
+        elif isinstance(node, list):
+            for element in node:
+                yield from self._walk_node(element)
+
 
     @logged_query
     def walk_items(self) -> Iterator[Item]:
