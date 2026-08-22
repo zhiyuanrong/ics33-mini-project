@@ -81,7 +81,7 @@ class QueryEngine:
         all_items = []
         for item in self.walk_items():
             all_items.append(item)
-        all_items = all_items.sort(key=lambda item: item.sku)
+            all_items.sort(key=lambda item: item.sku)
         lo = 0
         hi = len(all_items)-1
         while lo < hi:
