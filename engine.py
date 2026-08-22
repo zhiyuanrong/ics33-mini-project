@@ -48,23 +48,28 @@ class QueryEngine:
     @logged_query
     def walk_items(self) -> Iterator[Item]:
         # TODO: Delegate lazily to _walk_node(self.source.root()).
-        raise NotImplementedError
-        yield  # pragma: no cover
+        yield from self._walk_node(self.source.root())
 
     @validate_predicate
     def filter_items(self, pred: Callable[[Item], bool]) -> Iterator[Item]:
         # TODO: Yield matching items lazily.
-        raise NotImplementedError
-        yield  # pragma: no cover
+        for item in self.walk_items():
+            if pred(item):
+                yield from self.walk_items()
+
 
     def map_items(self, fn: Callable[[Item], T]) -> Iterator[T]:
         # TODO: Yield mapped values lazily.
-        raise NotImplementedError
-        yield  # pragma: no cover
+        for item in self.walk_items():
+            yield fn(item)
 
     def reduce_items(self, reducer: Callable[[U, Item], U], initial: U) -> U:
         # TODO: Fold all items from the traversal into an accumulator.
-        raise NotImplementedError
+        total = initial
+        for item in self.walk_items():
+            total = reducer(total , item)
+        return total
+
 
     def find_item_by_sku(self, sku: str) -> Item | None:
         """Sort by SKU and use a student-written binary-search loop.
@@ -73,4 +78,24 @@ class QueryEngine:
         the assignment requirement.
         """
         # TODO: Materialize, sort, and implement lo/hi/mid binary search.
-        raise NotImplementedError
+        all_items = []
+        for item in self.walk_items():
+            all_items.append(item)
+        all_items = all_items.sort(key=lambda item: item.sku)
+        lo = 0
+        hi = len(all_items)-1
+        while lo < hi:
+            mid = (lo+hi)//2
+            mid_sku = all_items[mid].sku
+
+            if mid_sku == sku:
+                return all_items[mid]
+            elif mid_sku < sku:
+                lo = mid+1
+            else:
+                hi = mid-1
+        return None
+
+
+
+
