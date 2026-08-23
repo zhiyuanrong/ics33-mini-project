@@ -55,7 +55,7 @@ class QueryEngine:
         # TODO: Yield matching items lazily.
         for item in self.walk_items():
             if pred(item):
-                yield from self.walk_items()
+                yield item
 
 
     def map_items(self, fn: Callable[[Item], T]) -> Iterator[T]:
@@ -84,10 +84,9 @@ class QueryEngine:
             all_items.sort(key=lambda item: item.sku)
         lo = 0
         hi = len(all_items)-1
-        while lo < hi:
+        while lo <= hi:
             mid = (lo+hi)//2
             mid_sku = all_items[mid].sku
-
             if mid_sku == sku:
                 return all_items[mid]
             elif mid_sku < sku:

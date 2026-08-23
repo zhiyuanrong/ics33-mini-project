@@ -21,9 +21,12 @@ def logged_query(fn: Callable[..., Iterable[T]]) -> Callable[..., Iterator[T]]:
     @wraps(fn)
     def wrapper(*args: Any, **kwargs: Any) -> Iterator[T]:
         # TODO: Return a lazy iterator that counts as it yields.
-        raise NotImplementedError
+        count = 0
+        for item in fn(*args, **kwargs):
+            count += 1
+            yield item
+        print(f"[LOG] {fn.__name__} returned {count} items")
 
-    return wrapper
 
 
 def validate_predicate(fn: Callable[..., Iterable[T]]) -> Callable[..., Iterator[T]]:
@@ -42,6 +45,20 @@ def validate_predicate(fn: Callable[..., Iterable[T]]) -> Callable[..., Iterator
         **kwargs: Any,
     ) -> Iterator[T]:
         # TODO: Return a lazy iterator that uses a guarded predicate.
-        raise NotImplementedError
+        if not callable(pred):
+            raise QueryValidationError("Predicate must be callable")
+
+        def guarded_pred(item: Any) -> bool:
+            try:
+                result = pred(item)
+            except Exception as exc:
+                raise QueryValidationError("Predicate raised an exception") from exc
+
+            if type(result) is not bool:
+                raise QueryValidationError("Predicate must return bool")
+
+            return result
+
+        yield from fn(self, guarded_pred, *args, **kwargs)
 
     return wrapper
