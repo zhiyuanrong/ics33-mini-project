@@ -26,7 +26,7 @@ def logged_query(fn: Callable[..., Iterable[T]]) -> Callable[..., Iterator[T]]:
             count += 1
             yield item
         print(f"[LOG] {fn.__name__} returned {count} items")
-
+    return wrapper
 
 
 def validate_predicate(fn: Callable[..., Iterable[T]]) -> Callable[..., Iterator[T]]:
