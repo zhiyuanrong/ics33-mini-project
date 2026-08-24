@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+from idlelib.query import Query
 
 from abc_sources import JSONInventorySource
 from engine import QueryEngine
@@ -16,7 +17,16 @@ def _fmt_item(item: Item) -> str:
 
 def cmd_list(args: argparse.Namespace) -> int:
     # TODO: Use QueryEngine methods; print matching items with _fmt_item.
-    raise NotImplementedError
+    source = JSONInventorySource(args.data)
+    engine = QueryEngine(source)
+    if args.rarity is None:
+        items = engine.walk_items()
+    else:
+        items = engine.filter_items(lambda item: item.rarity == args.rarity)
+    for item in items:
+        print(_fmt_item(item))
+    return 0
+
 
 
 def cmd_find(args: argparse.Namespace) -> int:
