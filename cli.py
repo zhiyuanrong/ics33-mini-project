@@ -31,12 +31,31 @@ def cmd_list(args: argparse.Namespace) -> int:
 
 def cmd_find(args: argparse.Namespace) -> int:
     # TODO: Return 0 for a hit. For a miss, print exactly "Not found" and return 1.
-    raise NotImplementedError
+    source = JSONInventorySource(args.data)
+    engine = QueryEngine(source)
+    item = engine.find_item_by_sku(args.sku)
+    if item is None:
+        print("Not found")
+        return 1
+
+    print(_fmt_item(item))
+    return 0
 
 
 def cmd_value(args: argparse.Namespace) -> int:
     # TODO: Print the total with exactly two decimal places and return 0.
-    raise NotImplementedError
+    source = JSONInventorySource(args.data)
+    engine = QueryEngine(source)
+    if args.rarity is None:
+        items = engine.walk_items()
+    else:
+        items = engine.filter_items(lambda item: item.rarity == args.rarity)
+
+    total = 0.0
+    for item in items:
+        total += item.qty * item.base_price
+    print(f"{total:.2f}")
+    return 0
 
 
 def build_parser() -> argparse.ArgumentParser:
