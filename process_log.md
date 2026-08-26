@@ -29,7 +29,7 @@ This stops too early when lo and hi point to the same final item. That last item
 Bug found in commit: b067c5f on Sat Aug 22, 2026 09:56:22,
 Fixed in commit: e213bb9 on Sun Aug 23, 2026 11:06:46
 - Change made:change it to `while lo <= hi:`
-- Test that verified the change
+- Test that verified the change:
 test_find_item_by_sku_finds_first_and_last_sorted_skus
 It checks:
 - first = engine.find_item_by_sku(items[0].sku)
