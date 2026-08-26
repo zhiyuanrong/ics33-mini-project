@@ -64,6 +64,3 @@ class StudentCliTests(unittest.TestCase):
         self.assertEqual(result, 0)
         self.assertEqual(lines[-1], "36.00")
 
-
-if __name__ == "__main__":
-    unittest.main()

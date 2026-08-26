@@ -1,8 +1,6 @@
 from __future__ import annotations
 
 import argparse
-from idlelib.query import Query
-
 from abc_sources import JSONInventorySource
 from engine import QueryEngine
 from models import Item

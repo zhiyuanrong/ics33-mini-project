@@ -17,7 +17,6 @@ import cli as guild_cli
 
 SAMPLE = os.path.join(os.path.dirname(__file__), "..", "data", "sample_small.json")
 
-
 class PublicAssignmentTests(unittest.TestCase):
     def engine(self) -> QueryEngine:
         return QueryEngine(JSONInventorySource(SAMPLE))
